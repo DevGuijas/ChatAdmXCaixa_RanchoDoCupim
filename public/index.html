@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat do Rancho - Caixa x Administração</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header>Chat Rancho do Cupim</header>
+        <div class="role-select">
+            <label for="role">Você é:</label>
+            <select id="role">
+                <option value="Caixa">Caixa</option>
+                <option value="Administração">Administração</option>
+            </select>
+        </div>
+        <ul id="messages"></ul>
+        <form id="form">
+            <input id="input" autocomplete="off" placeholder="Digite sua mensagem..." />
+            <button>Enviar</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
