@@ -1,7 +1,7 @@
-
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const multer = require('multer');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -10,23 +10,35 @@ const io = new Server(server);
 
 let messages = [];
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'public/uploads'),
+    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const upload = multer({ storage });
+
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.post('/upload', upload.single('image'), (req, res) => {
+    const role = req.body.role || 'Desconhecido';
+    const imageUrl = '/uploads/' + req.file.filename;
+    const msg = { role: role, image: imageUrl };
+    messages.push(msg);
+    io.emit('chatMessage', msg);
+    res.json({ success: true });
+});
+
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 io.on('connection', (socket) => {
     console.log('Um usuário conectou');
-
-    // Enviar o histórico para o novo usuário
     socket.emit('chatHistory', messages);
-
     socket.on('chatMessage', (msg) => {
         messages.push(msg);
         io.emit('chatMessage', msg);
     });
-
     socket.on('disconnect', () => {
         console.log('Um usuário desconectou');
     });
@@ -34,5 +46,5 @@ io.on('connection', (socket) => {
 
 const PORT = 3000;
 server.listen(PORT, () => {
-    console.log(`Servidor de Chat rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Chat do Rancho - Caixa x Administração</title>
+    <title>Chat do Rancho</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,9 +17,11 @@
         </div>
         <ul id="messages"></ul>
         <form id="form">
+            <label for="imageUpload" class="clip-icon">📎</label>
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;" />
             <input id="input" autocomplete="off" placeholder="Digite sua mensagem..." />
             <button>Enviar</button>
-        </form>
+        </form>        
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
