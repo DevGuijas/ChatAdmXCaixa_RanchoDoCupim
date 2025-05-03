@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,15 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
-        <header>Chat Rancho do Cupim</header>
-        <div class="role-select">
-            <label for="role">Você é:</label>
-            <select id="role">
-                <option value="Caixa">Caixa</option>
-                <option value="Administração">Administração</option>
-            </select>
-        </div>
+    <div class="login-container" id="loginContainer">
+        <h2>Login - Chat do Rancho V2</h2>
+        <input type="text" id="username" placeholder="Usuário">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+    </div>
+
+    <div class="chat-container" id="chatContainer" style="display:none;">
+        <header>Chat Rancho do Cupim - <span id="userRole"></span></header>
         <ul id="messages"></ul>
         <form id="form">
             <label for="imageUpload" class="clip-icon">📎</label>

@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     padding: 0;
@@ -9,7 +10,7 @@ body {
     align-items: center;
 }
 
-.chat-container {
+.login-container, .chat-container {
     background: white;
     padding: 20px;
     border-radius: 16px;
@@ -20,29 +21,17 @@ body {
     flex-direction: column;
 }
 
+.login-container h2{
+    text-align: center;
+    padding-bottom: 20px;
+}
+
 header {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
     color: #333;
-}
-
-.role-select {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-.role-select label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.role-select select {
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
 }
 
 #messages {
@@ -63,7 +52,6 @@ header {
     word-break: break-word;
 }
 
-/* Estilos distintos por papel */
 .message-caixa {
     background: #e1f5fe;
 }
@@ -72,7 +60,6 @@ header {
     background: #ffebee;
 }
 
-/* Estilo do campo de texto */
 form {
     display: flex;
     align-items: center;
@@ -111,4 +98,13 @@ button:hover {
     font-size: 20px;
     cursor: pointer;
     padding: 10px;
+}
+
+input[type="text"], input[type="password"] {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 94%;
 }

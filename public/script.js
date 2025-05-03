@@ -1,18 +1,41 @@
+
 const socket = io();
 
+let currentRole = null;
+
+const loginContainer = document.getElementById('loginContainer');
+const chatContainer = document.getElementById('chatContainer');
+const userRoleDisplay = document.getElementById('userRole');
 const form = document.getElementById('form');
 const input = document.getElementById('input');
 const imageInput = document.getElementById('imageUpload');
 const messages = document.getElementById('messages');
-const roleSelect = document.getElementById('role');
+
+function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    }).then(res => res.json()).then(data => {
+        if (data.success) {
+            currentRole = data.role;
+            userRoleDisplay.textContent = currentRole;
+            loginContainer.style.display = 'none';
+            chatContainer.style.display = 'flex';
+        } else {
+            alert('Login inválido!');
+        }
+    });
+}
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const role = roleSelect.value;
     const text = input.value.trim();
-
     if (text) {
-        const msg = { role, text };
+        const msg = { role: currentRole, text };
         socket.emit('chatMessage', msg);
         input.value = '';
     }
@@ -21,46 +44,32 @@ form.addEventListener('submit', (e) => {
         const file = imageInput.files[0];
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('role', role);
+        formData.append('role', currentRole);
 
         fetch('/upload', {
             method: 'POST',
             body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
+        }).then(res => res.json()).then(data => {
             if (data.success && data.imageUrl) {
                 socket.emit('chatMessage', {
-                    role,
+                    role: currentRole,
                     image: data.imageUrl
                 });
             }
             imageInput.value = '';
-        })
-        .catch(err => {
+        }).catch(err => {
             console.error('Erro ao enviar imagem:', err);
         });
     }
 });
 
-socket.on('chatMessage', (msg) => {
-    addMessage(msg);
-});
-
-socket.on('chatHistory', (history) => {
-    history.forEach(msg => addMessage(msg));
-});
+socket.on('chatMessage', (msg) => addMessage(msg));
+socket.on('chatHistory', (history) => history.forEach(msg => addMessage(msg)));
 
 function addMessage(msg) {
     const item = document.createElement('li');
-
-    // Aplica classe de cor com base no papel
-    if (msg.role === 'Caixa') {
-        item.classList.add('message-caixa');
-    } else if (msg.role === 'Administração') {
-        item.classList.add('message-admin');
-    }
-
+    item.classList.add(msg.role === 'Caixa' ? 'message-caixa' : 'message-admin');
+    
     item.innerHTML = `<strong>${msg.role}:</strong> `;
     if (msg.text) item.innerHTML += msg.text;
     if (msg.image) item.innerHTML += `<br><img src="${msg.image}" style="max-width: 100%; border-radius: 8px;">`;

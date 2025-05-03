@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const path = require('path');
@@ -10,14 +11,28 @@ const io = new Server(server);
 
 let messages = [];
 
+const users = {
+    caixa: "1234",
+    adm: "1234"
+};
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'public/uploads'),
     filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
-
 const upload = multer({ storage });
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (users[username] && users[username] === password) {
+        res.json({ success: true, role: username === "caixa" ? "Caixa" : "Administração" });
+    } else {
+        res.json({ success: false });
+    }
+});
 
 app.post('/upload', upload.single('image'), (req, res) => {
     const role = req.body.role || 'Desconhecido';
@@ -33,18 +48,13 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('Um usuário conectou');
     socket.emit('chatHistory', messages);
     socket.on('chatMessage', (msg) => {
         messages.push(msg);
         io.emit('chatMessage', msg);
     });
-    socket.on('disconnect', () => {
-        console.log('Um usuário desconectou');
-    });
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+server.listen(3000, () => {
+    console.log("Servidor rodando em http://localhost:3000");
 });
