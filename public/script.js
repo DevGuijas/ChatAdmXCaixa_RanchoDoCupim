@@ -77,3 +77,28 @@ function addMessage(msg) {
     messages.appendChild(item);
     messages.scrollTop = messages.scrollHeight;
 }
+
+const notificationSound = new Audio('/notification.mp3');
+
+function shouldPlayNotification(msgRole) {
+    // Somente toca se a mensagem for do papel oposto
+    return (currentRole === 'Caixa' && msgRole === 'Administração') ||
+           (currentRole === 'Administração' && msgRole === 'Caixa');
+}
+
+function addMessage(msg) {
+    const item = document.createElement('li');
+    item.classList.add(msg.role === 'Caixa' ? 'message-caixa' : 'message-admin');
+
+    item.innerHTML = `<strong>${msg.role}:</strong> `;
+    if (msg.text) item.innerHTML += msg.text;
+    if (msg.image) item.innerHTML += `<br><img src="${msg.image}" style="max-width: 100%; border-radius: 8px;">`;
+
+    messages.appendChild(item);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Toca som de notificação se for do papel oposto
+    if (shouldPlayNotification(msg.role)) {
+        notificationSound.play().catch(() => {});
+    }
+}
