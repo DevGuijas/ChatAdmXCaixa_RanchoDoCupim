@@ -80,16 +80,17 @@ function addMessage(msg) {
 
 const notificationSound = new Audio('/notification.mp3');
 
-function shouldPlayNotification(msgRole) {
-    // Somente toca se a mensagem for do papel oposto
-    return (currentRole === 'Caixa' && msgRole === 'Administração') ||
-           (currentRole === 'Administração' && msgRole === 'Caixa');
+function shouldPlayNotification(senderRole) {
+    // Só toca se:
+    // 1. A aba NÃO está visível (document.hidden é true)
+    // 2. E a mensagem veio do papel diferente do usuário atual
+    return document.hidden && senderRole !== currentRole;
 }
 
 function addMessage(msg) {
     const item = document.createElement('li');
     item.classList.add(msg.role === 'Caixa' ? 'message-caixa' : 'message-admin');
-
+    
     item.innerHTML = `<strong>${msg.role}:</strong> `;
     if (msg.text) item.innerHTML += msg.text;
     if (msg.image) item.innerHTML += `<br><img src="${msg.image}" style="max-width: 100%; border-radius: 8px;">`;
@@ -97,8 +98,8 @@ function addMessage(msg) {
     messages.appendChild(item);
     messages.scrollTop = messages.scrollHeight;
 
-    // Toca som de notificação se for do papel oposto
+    // Toca o som de notificação se for de outro papel e a aba não estiver visível
     if (shouldPlayNotification(msg.role)) {
-        notificationSound.play().catch(() => {});
+        notificationSound.play().catch(err => console.error("Erro ao tocar som:", err));
     }
 }
