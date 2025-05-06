@@ -120,3 +120,45 @@ input[type="text"], input[type="password"] {
     border-radius: 10px;
     width: 94%;
 }
+
+.emoji-wrapper {
+    position: relative;
+}
+
+.emoji-icon {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.emoji-panel {
+    position: absolute;
+    bottom: 45px;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    width: 220px;
+    max-height: 180px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    font-size: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow-y: auto;
+}
+
+.emoji-panel span {
+    cursor: pointer;
+    padding: 4px;
+    transition: background 0.2s ease;
+    border-radius: 6px;
+}
+
+.emoji-panel span:hover {
+    background: #f0f0f0;
+}

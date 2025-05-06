@@ -11,6 +11,11 @@ const input = document.getElementById('input');
 const imageInput = document.getElementById('imageUpload');
 const messages = document.getElementById('messages');
 
+// Emoji Toggle:
+const emojiToggle = document.getElementById('emojiToggle');
+const emojiPanel = document.getElementById('emojiPanel');
+const inputField = document.getElementById('input');
+
 function login() {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -38,6 +43,7 @@ form.addEventListener('submit', (e) => {
         const msg = { role: currentRole, text };
         socket.emit('chatMessage', msg);
         input.value = '';
+        emojiPanel.style.display = 'none'; // Fecha o painel de emoji.
     }
 
     if (imageInput.files.length > 0) {
@@ -82,8 +88,8 @@ const notificationSound = new Audio('/notification.mp3');
 
 function shouldPlayNotification(senderRole) {
     // Só toca se:
-    // 1. A aba NÃO está visível (document.hidden é true)
-    // 2. E a mensagem veio do papel diferente do usuário atual
+    // 1. A aba NÃO está visível (document.hidden é true).
+    // 2. E a mensagem veio do papel diferente do usuário atual.
     return document.hidden && senderRole !== currentRole;
 }
 
@@ -98,8 +104,20 @@ function addMessage(msg) {
     messages.appendChild(item);
     messages.scrollTop = messages.scrollHeight;
 
-    // Toca o som de notificação se for de outro papel e a aba não estiver visível
+    // Toca o som de notificação se for de outro papel e a aba não estiver visível.
     if (shouldPlayNotification(msg.role)) {
         notificationSound.play().catch(err => console.error("Erro ao tocar som:", err));
     }
 }
+
+emojiToggle.addEventListener('click', () => {
+    emojiPanel.style.display = emojiPanel.style.display === 'none' ? 'block' : 'none';
+});
+
+// Inserir emoji ao clicar:
+emojiPanel.addEventListener('click', (e) => {
+    if (e.target.tagName === 'SPAN') {
+        inputField.value += e.target.textContent;
+        inputField.focus();
+    }
+});
